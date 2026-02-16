@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leseprofi – Tempo & Genauigkeit trainieren</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300..800;1,9..40,300..800&display=swap');
+
+:root {
+  --teal: #0D9488; --teal-dark: #0F766E; --teal-light: #CCFBF1; --teal-50: #F0FDFA;
+  --amber: #F59E0B; --amber-light: #FEF3C7; --amber-dark: #B45309;
+  --emerald: #10B981; --emerald-light: #D1FAE5;
+  --rose: #F43F5E; --rose-light: #FFE4E6;
+  --violet: #8B5CF6; --violet-light: #EDE9FE;
+  --slate-50: #F8FAFC; --slate-100: #F1F5F9; --slate-200: #E2E8F0; --slate-300: #CBD5E1;
+  --slate-400: #94A3B8; --slate-500: #64748B; --slate-600: #475569; --slate-700: #334155;
+  --slate-800: #1E293B; --slate-900: #0F172A;
+  --radius: 16px; --radius-sm: 10px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.07); --shadow-lg: 0 12px 40px rgba(0,0,0,0.10);
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, -apple-system, sans-serif;
+  --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:var(--font-body); background:var(--slate-50); color:var(--slate-800); min-height:100vh; overflow-x:hidden; }
+
+/* ─── HEADER ─── */
+.app-header {
+  background: linear-gradient(135deg, var(--teal) 0%, var(--teal-dark) 60%, #065F46 100%);
+  color:white; padding:14px 24px; display:flex; align-items:center; justify-content:space-between;
+  position:sticky; top:0; z-index:100; box-shadow:0 4px 20px rgba(13,148,136,0.3);
+}
+.app-header h1 { font-family:var(--font-display); font-size:1.4rem; font-weight:400; display:flex; align-items:center; gap:10px; }
+
+/* ─── BUTTONS ─── */
+.btn { border:none; border-radius:var(--radius-sm); padding:10px 20px; font-size:0.92rem; font-weight:600; cursor:pointer; transition:var(--transition); display:inline-flex; align-items:center; gap:8px; font-family:var(--font-body); }
+.btn:active { transform:scale(0.97); }
+.btn-white { background:rgba(255,255,255,0.18); color:white; backdrop-filter:blur(8px); }
+.btn-white:hover { background:rgba(255,255,255,0.32); }
+.btn-primary { background:var(--teal); color:white; }
+.btn-primary:hover { background:var(--teal-dark); }
+.btn-success { background:var(--emerald); color:white; }
+.btn-success:hover { background:#059669; }
+.btn-outline { background:transparent; color:var(--slate-600); border:2px solid var(--slate-200); }
+.btn-outline:hover { border-color:var(--teal); color:var(--teal); }
+.btn-ghost { background:transparent; color:var(--slate-500); }
+.btn-ghost:hover { color:var(--teal); background:var(--teal-50); }
+.btn-lg { padding:14px 28px; font-size:1.05rem; border-radius:var(--radius); }
+.btn-sm { padding:7px 14px; font-size:0.82rem; }
+.btn-icon { width:38px; height:38px; padding:0; display:flex; align-items:center; justify-content:center; border-radius:50%; }
+
+.container { max-width:860px; margin:0 auto; padding:28px 20px 80px; }
+.view { display:none; }
+.view.active { display:block; animation:fadeUp 0.35s ease; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+
+/* ─── HERO ─── */
+.hero-card {
+  background:linear-gradient(135deg,#0F766E 0%,#0D9488 40%,#14B8A6 100%);
+  border-radius:var(--radius); color:white; padding:32px 36px; margin-bottom:28px; position:relative; overflow:hidden;
+}
+.hero-card::before { content:''; position:absolute; top:-60%; right:-15%; width:280px; height:280px; background:rgba(255,255,255,0.06); border-radius:50%; }
+.hero-card h2 { font-family:var(--font-display); font-size:1.6rem; font-weight:400; margin-bottom:6px; position:relative; z-index:1; }
+.hero-card p { font-size:0.95rem; opacity:0.88; line-height:1.55; max-width:520px; position:relative; z-index:1; }
+.quick-stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:14px; margin-top:20px; position:relative; z-index:1; }
+.stat-card { background:rgba(255,255,255,0.14); backdrop-filter:blur(8px); border-radius:var(--radius-sm); padding:14px 18px; text-align:center; }
+.stat-card .stat-value { font-family:var(--font-display); font-size:1.7rem; font-weight:400; line-height:1.2; }
+.stat-card .stat-label { font-size:0.75rem; opacity:0.8; margin-top:2px; text-transform:uppercase; letter-spacing:0.06em; }
+
+.section-heading { font-family:var(--font-display); font-size:1.2rem; font-weight:400; color:var(--slate-700); margin-bottom:16px; display:flex; align-items:center; gap:10px; }
+.card { background:white; border-radius:var(--radius); padding:24px; box-shadow:var(--shadow); margin-bottom:20px; }
+
+/* ─── TEXT OPTIONS ─── */
+.text-option { background:white; border-radius:var(--radius); padding:20px 24px; margin-bottom:12px; cursor:pointer; transition:var(--transition); border:2px solid var(--slate-200); }
+.text-option:hover { border-color:var(--teal); box-shadow:var(--shadow); }
+.text-option.selected { border-color:var(--teal); background:var(--teal-50); }
+.text-option h4 { font-family:var(--font-display); font-size:1rem; font-weight:400; color:var(--slate-800); margin-bottom:4px; }
+.text-option .to-meta { font-size:0.8rem; color:var(--slate-400); display:flex; gap:14px; }
+.text-option .to-preview { font-size:0.88rem; color:var(--slate-500); margin-top:8px; line-height:1.45; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.difficulty-badge { display:inline-flex; padding:2px 10px; border-radius:20px; font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; }
+.diff-easy { background:var(--emerald-light); color:#065F46; }
+.diff-medium { background:var(--amber-light); color:var(--amber-dark); }
+.diff-hard { background:var(--violet-light); color:#5B21B6; }
+
+/* ─── READING VIEW ─── */
+.reading-phase-indicator { display:flex; align-items:center; gap:8px; margin-bottom:20px; }
+.phase-dot { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.82rem; font-weight:700; background:var(--slate-200); color:var(--slate-400); transition:var(--transition); }
+.phase-dot.active { background:var(--teal); color:white; }
+.phase-dot.done { background:var(--emerald); color:white; }
+.phase-line { flex:1; height:3px; background:var(--slate-200); border-radius:3px; transition:var(--transition); }
+.phase-line.done { background:var(--emerald); }
+
+.timer-bar { text-align:center; margin-bottom:16px; }
+.timer-value { font-family:var(--font-display); font-size:3rem; color:var(--teal); line-height:1; font-variant-numeric:tabular-nums; }
+.timer-label { font-size:0.82rem; color:var(--slate-400); margin-top:4px; text-transform:uppercase; letter-spacing:0.05em; }
+
+.reading-area { background:white; border-radius:var(--radius); padding:32px 36px; box-shadow:var(--shadow); margin-bottom:20px; }
+.reading-title { font-family:var(--font-display); font-size:1.4rem; color:var(--teal-dark); margin-bottom:16px; padding-bottom:12px; border-bottom:2px solid var(--teal-light); }
+
+/* ─── LIVE WORD DISPLAY ─── */
+.reading-text { font-size:1.25rem; line-height:2.2; color:var(--slate-800); text-align:left; }
+.reading-text .word { display:inline; padding:3px 2px; border-radius:4px; transition:background 0.2s, color 0.2s; }
+.reading-text .word.current { background:var(--teal); color:white; font-weight:bold; padding:4px 8px; border-radius:6px; box-shadow:0 2px 8px rgba(13,148,136,0.35); }
+.reading-text .word.correct { background:var(--emerald-light); color:#065F46; }
+.reading-text .word.error { background:var(--rose-light); color:#9F1239; text-decoration:underline wavy var(--rose); text-underline-offset:3px; }
+
+/* ─── MIC STATUS ─── */
+.mic-bar { display:flex; align-items:center; justify-content:center; gap:12px; padding:12px 20px; border-radius:var(--radius-sm); margin-bottom:16px; font-size:0.88rem; font-weight:600; transition:var(--transition); }
+.mic-bar.recording { background:var(--emerald-light); color:#065F46; border:2px solid var(--emerald); }
+.mic-bar.error { background:var(--rose-light); color:#9F1239; border:2px solid var(--rose); cursor:pointer; }
+.mic-bar.error:hover { background:#FECDD3; }
+.mic-bar.off { background:var(--amber-light); color:var(--amber-dark); border:2px solid var(--amber); }
+.mic-bar.waiting { background:var(--slate-100); color:var(--slate-500); border:2px solid var(--slate-300); }
+
+.mic-pulse { width:12px; height:12px; border-radius:50%; background:var(--emerald); animation:micPulse 1s ease-in-out infinite; }
+@keyframes micPulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.4);opacity:0.5} }
+
+.heard-box { text-align:center; font-size:0.85rem; color:var(--slate-500); margin-bottom:12px; min-height:24px; }
+.heard-box .heard-word { font-weight:700; color:var(--teal); }
+
+/* ─── COUNTDOWN ─── */
+.countdown-overlay { position:fixed; inset:0; background:rgba(15,23,42,0.7); display:flex; align-items:center; justify-content:center; z-index:500; backdrop-filter:blur(6px); }
+.countdown-number { font-family:var(--font-display); font-size:8rem; color:white; animation:countPop 0.6s ease; }
+@keyframes countPop { 0%{transform:scale(0.5);opacity:0} 50%{transform:scale(1.15)} 100%{transform:scale(1);opacity:1} }
+
+/* ─── QUESTIONS ─── */
+.question-card { background:white; border-radius:var(--radius); padding:22px 26px; margin-bottom:14px; box-shadow:var(--shadow); border-left:4px solid var(--teal); }
+.question-card .qc-num { font-size:0.78rem; font-weight:700; color:var(--teal); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:6px; }
+.question-card h4 { font-family:var(--font-display); font-size:1.05rem; font-weight:400; color:var(--slate-800); margin-bottom:14px; }
+.answer-option { display:block; width:100%; text-align:left; padding:12px 16px; border:2px solid var(--slate-200); border-radius:var(--radius-sm); cursor:pointer; transition:var(--transition); font-size:0.95rem; font-family:var(--font-body); margin-bottom:8px; background:white; }
+.answer-option:hover { border-color:var(--teal); background:var(--teal-50); }
+.answer-option.selected { border-color:var(--teal); background:var(--teal-light); color:var(--teal-dark); font-weight:600; }
+.answer-option.correct { border-color:var(--emerald); background:var(--emerald-light); color:#065F46; }
+.answer-option.incorrect { border-color:var(--rose); background:var(--rose-light); color:#9F1239; }
+
+/* ─── RESULTS ─── */
+.result-hero { text-align:center; padding:36px 24px; background:linear-gradient(135deg,var(--teal-50) 0%,white 100%); border-radius:var(--radius); margin-bottom:20px; box-shadow:var(--shadow); }
+.result-hero .rh-emoji { font-size:3.5rem; margin-bottom:12px; }
+.result-hero .rh-title { font-family:var(--font-display); font-size:1.5rem; color:var(--slate-800); margin-bottom:4px; }
+.result-hero .rh-subtitle { font-size:0.95rem; color:var(--slate-500); }
+.result-metrics { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:14px; margin-bottom:24px; }
+.metric-card { background:white; border-radius:var(--radius); padding:20px; text-align:center; box-shadow:var(--shadow); }
+.metric-card .mc-value { font-family:var(--font-display); font-size:2rem; line-height:1.1; }
+.metric-card .mc-label { font-size:0.78rem; color:var(--slate-400); margin-top:4px; text-transform:uppercase; letter-spacing:0.05em; }
+.metric-card .mc-change { font-size:0.8rem; font-weight:700; margin-top:6px; }
+.mc-change.up { color:var(--emerald); }
+.mc-change.down { color:var(--rose); }
+
+.tip-box { background:var(--amber-light); border-radius:var(--radius-sm); padding:16px 20px; border-left:4px solid var(--amber); font-size:0.92rem; line-height:1.55; color:var(--slate-700); margin-bottom:20px; }
+
+/* ─── WORD ANALYSIS SUMMARY ─── */
+.word-analysis-card { background:white; border-radius:var(--radius); padding:24px; box-shadow:var(--shadow); margin-bottom:20px; }
+.wa-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; flex-wrap:wrap; gap:10px; }
+.wa-title { font-family:var(--font-display); font-size:1.1rem; color:var(--slate-700); }
+.wa-legend { display:flex; gap:14px; flex-wrap:wrap; font-size:0.78rem; font-weight:600; }
+.wa-legend-item { display:flex; align-items:center; gap:5px; }
+.wa-legend-dot { width:12px; height:12px; border-radius:3px; }
+.word-flow { font-size:1.1rem; line-height:2.4; }
+.word-flow .wf-correct { display:inline; padding:3px 2px; background:var(--emerald-light); color:#065F46; border-radius:4px; }
+.word-flow .wf-error { display:inline; padding:3px 2px; background:var(--rose-light); color:#9F1239; border-radius:4px; text-decoration:underline wavy var(--rose); text-underline-offset:3px; }
+.word-flow .wf-unread { display:inline; padding:3px 2px; color:var(--slate-400); }
+.wa-stats-bar { display:flex; gap:6px; margin-top:16px; flex-wrap:wrap; }
+.wa-stat-chip { padding:5px 14px; border-radius:20px; font-size:0.8rem; font-weight:700; }
+
+/* ─── SVG CHART ─── */
+.progress-chart { width:100%; height:200px; position:relative; margin:12px 0; }
+.svg-chart { width:100%; overflow:visible; }
+.chart-line { fill:none; stroke:var(--teal); stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; }
+.chart-area { fill:url(#tealGradient); }
+.chart-dot { fill:var(--teal); stroke:white; stroke-width:2; cursor:pointer; }
+.chart-grid-line { stroke:var(--slate-200); stroke-width:1; stroke-dasharray:4,4; }
+.chart-label { font-family:var(--font-body); font-size:11px; fill:var(--slate-400); }
+.comp-line { fill:none; stroke:var(--amber); stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; }
+.comp-dot { fill:var(--amber); stroke:white; stroke-width:2; }
+.chart-legend { display:flex; gap:20px; justify-content:center; margin-top:8px; font-size:0.8rem; color:var(--slate-500); }
+.chart-legend span { display:flex; align-items:center; gap:6px; }
+.legend-dot { width:10px; height:10px; border-radius:50%; }
+
+/* ─── SETTINGS ─── */
+.settings-panel { background:white; border-radius:var(--radius); padding:24px; box-shadow:var(--shadow); }
+.setting-row { display:flex; align-items:center; justify-content:space-between; padding:14px 0; border-bottom:1px solid var(--slate-100); gap:16px; }
+.setting-row:last-child { border-bottom:none; }
+.setting-row label { font-weight:600; font-size:0.9rem; color:var(--slate-600); }
+.setting-row .setting-desc { font-size:0.8rem; color:var(--slate-400); margin-top:2px; }
+.toggle { position:relative; display:inline-block; width:48px; height:26px; }
+.toggle input { opacity:0; width:0; height:0; }
+.toggle .slider { position:absolute; cursor:pointer; inset:0; background:var(--slate-300); border-radius:26px; transition:var(--transition); }
+.toggle .slider::before { content:''; position:absolute; height:20px; width:20px; left:3px; bottom:3px; background:white; border-radius:50%; transition:var(--transition); }
+.toggle input:checked+.slider { background:var(--teal); }
+.toggle input:checked+.slider::before { transform:translateX(22px); }
+
+.history-list { max-height:300px; overflow-y:auto; }
+.history-item { display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--slate-100); gap:12px; }
+.history-item:last-child { border-bottom:none; }
+.hi-info { flex:1; min-width:0; }
+.hi-title { font-weight:600; font-size:0.9rem; color:var(--slate-700); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.hi-meta { font-size:0.78rem; color:var(--slate-400); margin-top:2px; }
+.hi-wpm { font-family:var(--font-display); font-size:1.3rem; color:var(--teal); white-space:nowrap; }
+.hi-score { display:flex; align-items:center; gap:4px; font-size:0.82rem; font-weight:600; padding:3px 10px; border-radius:20px; white-space:nowrap; }
+.hi-score.good { background:var(--emerald-light); color:#065F46; }
+.hi-score.ok { background:var(--amber-light); color:var(--amber-dark); }
+.hi-score.weak { background:var(--rose-light); color:#9F1239; }
+
+/* ─── NAV ─── */
+.bottom-nav { position:fixed; bottom:0; left:0; right:0; background:white; border-top:1px solid var(--slate-200); display:flex; justify-content:center; z-index:100; padding:6px 12px env(safe-area-inset-bottom,8px); box-shadow:0 -4px 20px rgba(0,0,0,0.06); }
+.nav-item { flex:1; max-width:100px; display:flex; flex-direction:column; align-items:center; gap:2px; padding:8px 4px; border:none; background:transparent; cursor:pointer; color:var(--slate-400); font-family:var(--font-body); font-size:0.68rem; font-weight:600; transition:var(--transition); border-radius:8px; }
+.nav-item:hover { color:var(--teal); }
+.nav-item.active { color:var(--teal); }
+.nav-item .nav-icon { font-size:1.3rem; line-height:1; }
+
+#micTestResult {
+  background:var(--slate-50); border:2px solid var(--slate-200); border-radius:var(--radius-sm);
+  padding:16px 20px; font-family:var(--font-body); line-height:1.6;
+}
+#micTestResult code { background:var(--slate-200); padding:1px 6px; border-radius:4px; font-size:0.85em; }
+
+textarea { width:100%; min-height:120px; border:2px solid var(--slate-200); border-radius:var(--radius-sm); padding:14px 18px; font-size:0.95rem; font-family:var(--font-body); color:var(--slate-700); background:white; transition:var(--transition); resize:vertical; line-height:1.6; }
+textarea:focus { outline:none; border-color:var(--teal); box-shadow:0 0 0 3px var(--teal-light); }
+select, input[type="text"] { border:2px solid var(--slate-200); border-radius:var(--radius-sm); padding:8px 14px; font-size:0.92rem; font-family:var(--font-body); color:var(--slate-700); background:white; transition:var(--transition); }
+select:focus, input:focus { outline:none; border-color:var(--teal); box-shadow:0 0 0 3px var(--teal-light); }
+
+@media (max-width:640px) {
+  .container { padding:20px 14px 80px; }
+  .hero-card { padding:24px 20px; }
+  .hero-card h2 { font-size:1.3rem; }
+  .reading-area { padding:22px 20px; }
+  .reading-text { font-size:1.1rem; }
+  .quick-stats { grid-template-columns:repeat(2,1fr); }
+  .result-metrics { grid-template-columns:repeat(2,1fr); }
+  .timer-value { font-size:2.2rem; }
+}
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <h1>⏱️ Leseprofi-Trainer</h1>
+  <button class="btn btn-white btn-sm" onclick="toggleFullscreen()" title="Vollbild">⛶</button>
+</header>
+
+<div class="container" id="appContainer">
+
+  <!-- ──── DASHBOARD ──── -->
+  <div class="view active" id="view-dashboard">
+    <div class="hero-card">
+      <h2 id="heroGreeting">Werde zum Leseprofi!</h2>
+      <p>Lies laut vor – die App erkennt in Echtzeit, welche Wörter du richtig oder falsch liest!</p>
+      <div class="quick-stats">
+        <div class="stat-card"><div class="stat-value" id="statTests">0</div><div class="stat-label">Tests</div></div>
+        <div class="stat-card"><div class="stat-value" id="statAvgWpm">–</div><div class="stat-label">Ø WpM</div></div>
+        <div class="stat-card"><div class="stat-value" id="statBestWpm">–</div><div class="stat-label">Bestleistung</div></div>
+        <div class="stat-card"><div class="stat-value" id="statAvgAcc">–</div><div class="stat-label">Ø Genauigkeit</div></div>
+      </div>
+    </div>
+
+    <div class="section-heading" id="progressHeading" style="display:none">📈 Dein Fortschritt</div>
+    <div class="card" id="progressChart" style="display:none">
+      <div class="progress-chart" id="chartContainer"></div>
+      <div class="chart-legend">
+        <span><span class="legend-dot" style="background:var(--teal)"></span> Wörter pro Minute</span>
+        <span><span class="legend-dot" style="background:var(--amber)"></span> Genauigkeit %</span>
+      </div>
+    </div>
+
+    <div class="section-heading" id="historyHeading" style="display:none">🕑 Letzte Ergebnisse</div>
+    <div class="card" id="historyCard" style="display:none">
+      <div class="history-list" id="historyList"></div>
+    </div>
+
+    <div style="text-align:center;margin-top:28px">
+      <button class="btn btn-primary btn-lg" onclick="showView('select')">📖 Neuen Test starten</button>
+    </div>
+  </div>
+
+  <!-- ──── TEXT SELECTION ──── -->
+  <div class="view" id="view-select">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+      <button class="btn btn-ghost btn-sm" onclick="showView('dashboard')">← Zurück</button>
+      <div class="section-heading" style="margin:0">📖 Text auswählen</div>
+    </div>
+    <div id="textOptions"></div>
+
+    <div class="card" style="margin-top:20px">
+      <div class="section-heading" style="font-size:1rem">✏️ Oder eigenen Text eingeben</div>
+      <input type="text" id="customTitle" placeholder="Titel (optional)" style="width:100%;margin-bottom:10px">
+      <textarea id="customText" placeholder="Hier den Text zum Vorlesen einfügen …"></textarea>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+        <span style="font-size:0.82rem;color:var(--slate-400)" id="customWordCount">0 Wörter</span>
+        <button class="btn btn-primary" onclick="startCustomReading()">▶ Eigenen Text starten</button>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:20px">
+      <button class="btn btn-primary btn-lg" id="startSelectedBtn" onclick="startReading()" disabled>▶ Lesetest starten</button>
+    </div>
+  </div>
+
+  <!-- ──── READING ──── -->
+  <div class="view" id="view-reading">
+    <div class="reading-phase-indicator">
+      <div class="phase-dot active">1</div>
+      <div class="phase-line"></div>
+      <div class="phase-dot">2</div>
+      <div class="phase-line"></div>
+      <div class="phase-dot">3</div>
+    </div>
+
+    <div class="timer-bar">
+      <div class="timer-value" id="readingTimer">00:00</div>
+      <div class="timer-label">Lesezeit</div>
+    </div>
+
+    <div class="mic-bar waiting" id="micBar">
+      <span id="micBarText">🎙️ Mikrofon wird vorbereitet …</span>
+    </div>
+
+    <div class="heard-box" id="heardBox"></div>
+
+    <div class="reading-area">
+      <div class="reading-title" id="readingTitle"></div>
+      <div class="reading-text" id="readingText"></div>
+    </div>
+
+    <div style="text-align:center;margin-top:16px">
+      <button class="btn btn-success btn-lg" onclick="finishReading()">✓ Fertig gelesen!</button>
+    </div>
+  </div>
+
+  <!-- ──── QUESTIONS ──── -->
+  <div class="view" id="view-questions">
+    <div class="reading-phase-indicator">
+      <div class="phase-dot done">✓</div><div class="phase-line done"></div>
+      <div class="phase-dot active">2</div><div class="phase-line"></div>
+      <div class="phase-dot">3</div>
+    </div>
+    <div class="section-heading">🧠 Hast du den Text verstanden?</div>
+    <div id="questionsContainer"></div>
+    <div style="text-align:center;margin-top:20px">
+      <button class="btn btn-primary btn-lg" onclick="checkAnswers()">✓ Antworten prüfen</button>
+    </div>
+  </div>
+
+  <!-- ──── RESULTS ──── -->
+  <div class="view" id="view-results">
+    <div class="reading-phase-indicator">
+      <div class="phase-dot done">✓</div><div class="phase-line done"></div>
+      <div class="phase-dot done">✓</div><div class="phase-line done"></div>
+      <div class="phase-dot done">✓</div>
+    </div>
+    <div class="result-hero"><div class="rh-emoji" id="resultEmoji">🎉</div><div class="rh-title" id="resultTitle"></div><div class="rh-subtitle" id="resultSubtitle"></div></div>
+    <div class="result-metrics" id="resultMetrics"></div>
+    <div id="wordAnalysisSection"></div>
+    <div class="tip-box" id="resultTip"></div>
+    <div id="resultComparison" style="display:none"></div>
+    <div style="display:flex;gap:12px;justify-content:center;margin-top:24px;flex-wrap:wrap">
+      <button class="btn btn-primary btn-lg" onclick="showView('select')">📖 Nochmal lesen</button>
+      <button class="btn btn-outline btn-lg" onclick="showView('dashboard')">← Übersicht</button>
+    </div>
+  </div>
+
+  <!-- ──── SETTINGS ──── -->
+  <div class="view" id="view-settings">
+    <div class="section-heading">⚙️ Einstellungen</div>
+    <div class="settings-panel">
+      <div class="setting-row">
+        <div><label>Schriftgröße</label><div class="setting-desc">Passe die Größe an.</div></div>
+        <select id="settingFontSize"><option value="1.15rem">Normal</option><option value="1.35rem">Groß</option><option value="1.6rem">Sehr groß</option></select>
+      </div>
+      <div class="setting-row">
+        <div><label>Zeilenabstand</label></div>
+        <select id="settingLineHeight"><option value="1.8">Normal</option><option value="2.2" selected>Weit</option><option value="2.8">Sehr weit</option></select>
+      </div>
+      <div class="setting-row">
+        <div><label>Countdown vor Start</label></div>
+        <select id="settingCountdown"><option value="yes" selected>Ja</option><option value="no">Nein</option></select>
+      </div>
+      <div class="setting-row">
+        <div><label>Name des Kindes</label><div class="setting-desc">Für persönliche Ansprache.</div></div>
+        <input type="text" id="settingName" placeholder="z.B. Lena" oninput="saveName()" style="max-width:160px">
+      </div>
+    </div>
+    <div style="margin-top:24px"><button class="btn btn-primary" onclick="testMicrophone()" style="margin-bottom:12px">🎙️ Mikrofon testen</button></div>
+    <div id="micTestResult" style="display:none;margin-bottom:16px"></div>
+    <div><button class="btn btn-outline" onclick="if(confirm('Alle Ergebnisse löschen?'))resetAllData()">🗑 Alle Daten zurücksetzen</button></div>
+  </div>
+</div>
+
+<div class="countdown-overlay" id="countdownOverlay" style="display:none">
+  <div class="countdown-number" id="countdownNumber">3</div>
+</div>
+
+<nav class="bottom-nav">
+  <button class="nav-item active" data-view="dashboard" onclick="showView('dashboard')"><span class="nav-icon">🏠</span>Start</button>
+  <button class="nav-item" data-view="select" onclick="showView('select')"><span class="nav-icon">📖</span>Texte</button>
+  <button class="nav-item" data-view="settings" onclick="showView('settings')"><span class="nav-icon">⚙️</span>Einstellungen</button>
+</nav>
+
+<script>
+// ══════════════════════════════════════
+// VERBESSERTE VERSION – LESEPROFI-TRAINER
+// ══════════════════════════════════════
+
+// ─── TEXTE (erweitert) ───
+const TEXTS = [
+  { id:'waldmaus', title:'Die Waldmaus', difficulty:'easy',
+    text:'Die kleine Waldmaus Mia lebte in einem gemütlichen Bau unter einer alten Eiche. Jeden Tag sammelte sie Nüsse, Samen und Beeren für den Winter. Ihre Nachbarn waren ein freundliches Eichhörnchen und eine weise Eule. Eines Tages fand Mia einen glänzenden Stein, der in der Sonne funkelte. Sie trug ihn stolz in ihren Bau und legte ihn neben ihr weiches Bett aus Moos und Blättern. Von nun an war der Stein ihr größter Schatz. Jedes Mal, wenn sie ihn ansah, musste sie lächeln und fühlte sich glücklich.',
+    questions:[{q:'Wo lebte die Waldmaus Mia?',options:['In einem Bau unter einer Eiche','In einem Nest auf einem Baum','In einem Loch im Felsen','In einer Scheune'],correct:0},{q:'Was sammelte Mia jeden Tag?',options:['Blumen und Gräser','Steine und Muscheln','Nüsse, Samen und Beeren','Holz und Blätter'],correct:2},{q:'Was fand Mia eines Tages?',options:['Eine goldene Münze','Einen glänzenden Stein','Einen bunten Schmetterling','Eine alte Karte'],correct:1},{q:'Woraus bestand Mias Bett?',options:['Aus Federn','Aus Wolle','Aus Moos und Blättern','Aus Gras'],correct:2}]
+  },
+  { id:'schulweg', title:'Mein Schulweg', difficulty:'easy',
+    text:'Jeden Morgen laufe ich zur Schule. Zuerst gehe ich an der Bäckerei vorbei, wo es wunderbar nach frischem Brot duftet. Dann überquere ich die große Straße am Zebrastreifen. Dabei schaue ich immer erst nach links und dann nach rechts. Danach komme ich am Spielplatz vorbei, wo die kleinen Kinder schon fröhlich schaukeln. Der letzte Teil meines Weges führt durch den Park. Dort singen morgens die Vögel besonders schön. Wenn ich die Schule erreiche, bin ich wach und bereit für den Tag.',
+    questions:[{q:'Was riecht das Kind an der Bäckerei?',options:['Kuchen','Frisches Brot','Pizza','Kekse'],correct:1},{q:'Wo überquert das Kind die Straße?',options:['An der Ampel','Am Zebrastreifen','An der Brücke','An der Kreuzung'],correct:1},{q:'Was machen die Kinder am Spielplatz?',options:['Sie rutschen','Sie klettern','Sie schaukeln','Sie spielen Fußball'],correct:2},{q:'Wohin führt der letzte Teil des Weges?',options:['Durch den Wald','Durch den Park','Am Fluss entlang','Durch die Altstadt'],correct:1}]
+  },
+  { id:'bienen', title:'Fleißige Bienen', difficulty:'medium',
+    text:'Bienen gehören zu den wichtigsten Insekten auf der Erde. In einem einzigen Bienenstock leben bis zu 60.000 Bienen zusammen. Die Königin legt jeden Tag bis zu 2.000 Eier. Die Arbeiterbienen fliegen täglich viele Kilometer weit, um Nektar und Pollen zu sammeln. Aus dem Nektar stellen sie Honig her, der als Wintervorrat dient. Dabei bestäuben sie gleichzeitig die Blüten der Pflanzen. Ohne die Bestäubung durch Bienen würden viele Obst- und Gemüsesorten nicht mehr wachsen. Deshalb sind Bienen für unsere Ernährung unverzichtbar. Leider sind Bienen heute durch Pestizide und den Verlust von Lebensräumen bedroht.',
+    questions:[{q:'Wie viele Bienen können in einem Stock leben?',options:['Bis zu 6.000','Bis zu 60.000','Bis zu 600','Bis zu 600.000'],correct:1},{q:'Was stellen Bienen aus Nektar her?',options:['Wachs','Honig','Pollen','Gelee'],correct:1},{q:'Warum sind Bienen so wichtig?',options:['Weil sie Honig machen','Weil sie Blüten bestäuben','Weil sie Schädlinge fressen','Weil sie schön aussehen'],correct:1},{q:'Was bedroht die Bienen heute?',options:['Zu viele Blumen','Andere Insekten','Pestizide und Lebensraumverlust','Zu kalte Winter'],correct:2}]
+  },
+  { id:'wasserkreislauf', title:'Der Wasserkreislauf', difficulty:'medium',
+    text:'Die Sonne erwärmt das Wasser in Flüssen, Seen und Meeren. Dabei verdampft ein Teil des Wassers und steigt als unsichtbarer Wasserdampf in die Luft auf. Je höher der Wasserdampf steigt, desto kälter wird es. In der Höhe kühlt der Dampf ab und verwandelt sich in winzige Wassertröpfchen, die wir als Wolken am Himmel sehen können. Wenn sich genügend Tröpfchen gesammelt haben, werden sie zu schwer und fallen als Regen, Schnee oder Hagel auf die Erde zurück. Das Regenwasser versickert im Boden oder fließt über Bäche und Flüsse zurück ins Meer. So beginnt der Kreislauf wieder von vorne.',
+    questions:[{q:'Was erwärmt das Wasser zuerst?',options:['Der Wind','Die Sonne','Der Mond','Die Erde'],correct:1},{q:'Was passiert mit Wasserdampf in der Höhe?',options:['Er wird wärmer','Er verschwindet','Er kühlt ab und wird zu Tröpfchen','Er wird zu Eis'],correct:2},{q:'In welchen Formen fällt Wasser zurück?',options:['Nur als Regen','Als Regen, Schnee oder Hagel','Nur als Schnee','Als Nebel'],correct:1},{q:'Warum ist der Wasserkreislauf wichtig?',options:['Er macht die Luft warm','Er erzeugt Wind','Er sorgt für frisches Wasser','Er lässt Wolken entstehen'],correct:2}]
+  },
+  { id:'roemer', title:'Das Leben der Römer', difficulty:'hard',
+    text:'Vor über 2.000 Jahren herrschten die Römer über ein riesiges Reich, das sich von Britannien im Norden bis nach Ägypten im Süden erstreckte. Die Stadt Rom war das Zentrum dieses Weltreichs. Die Römer bauten gerade Straßen, die viele Städte miteinander verbanden. Einige dieser Straßen gibt es noch heute. Sie erfanden auch Wasserleitungen, die sogenannten Aquädukte, um frisches Wasser in die Städte zu bringen. Die römischen Kinder aus wohlhabenden Familien gingen zur Schule, wo sie Lesen, Schreiben und Rechnen lernten. Arme Kinder mussten dagegen oft arbeiten.',
+    questions:[{q:'Wie weit erstreckte sich das Römische Reich?',options:['Nur in Italien','Von Spanien bis Griechenland','Von Britannien bis Ägypten','Von Frankreich bis Indien'],correct:2},{q:'Was waren Aquädukte?',options:['Brücken für Pferde','Wasserleitungen','Handelsstraßen','Tempel'],correct:1},{q:'Wer durfte zur Schule gehen?',options:['Alle Kinder','Kinder aus wohlhabenden Familien','Nur Jungen','Nur Mädchen'],correct:1},{q:'Welche Bauwerke gibt es noch heute?',options:['Aquädukte','Tempel','Gerade Straßen','Alle drei'],correct:2}]
+  },
+  { id:'regenwald', title:'Der tropische Regenwald', difficulty:'hard',
+    text:'Tropische Regenwälder bedecken nur etwa sechs Prozent der Erdoberfläche, beherbergen aber mehr als die Hälfte aller Tier- und Pflanzenarten der Welt. Der größte Regenwald ist der Amazonas-Regenwald in Südamerika. In einem Regenwald gibt es verschiedene Stockwerke, ähnlich wie in einem Hochhaus. Ganz oben bilden die Baumkronen ein dichtes Blätterdach, das kaum Sonnenlicht zum Waldboden durchlässt. Zwischen den Baumkronen leben bunte Papageien, flinke Affen und unzählige Insektenarten. Am Boden wachsen Farne und Pilze im feuchten Schatten.',
+    questions:[{q:'Wie viel Prozent der Erde bedecken Regenwälder?',options:['Etwa 20 Prozent','Etwa 15 Prozent','Etwa 6 Prozent','Etwa 50 Prozent'],correct:2},{q:'Warum kommt wenig Licht am Boden an?',options:['Weil es immer bewölkt ist','Weil die Baumkronen ein dichtes Dach bilden','Weil es dort Nacht ist','Wegen der Berge'],correct:1},{q:'Welche Tiere leben in den Baumkronen?',options:['Fische und Krabben','Papageien, Affen und Insekten','Bären und Wölfe','Schlangen und Krokodile'],correct:1},{q:'Was wächst am Waldboden?',options:['Große Bäume','Blumen','Farne und Pilze','Gras'],correct:2}]
+  }
+];
+
+// ─── SPEICHER ───
+const STORAGE_KEY = 'leseprofi-results-v3';
+function getResults() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { return []; } }
+function saveResult(r) { const a = getResults(); a.push(r); localStorage.setItem(STORAGE_KEY, JSON.stringify(a)); }
+function getName() { return localStorage.getItem('leseprofi-name') || ''; }
+function saveName() { localStorage.setItem('leseprofi-name', document.getElementById('settingName').value.trim()); updateDashboard(); }
+function resetAllData() { localStorage.removeItem(STORAGE_KEY); localStorage.removeItem('leseprofi-name'); document.getElementById('settingName').value=''; showView('dashboard'); }
+
+// ─── GLOBALE ZUSTÄNDE ───
+let currentTest = null;
+let wordArray = [];
+let wordResults = []; // 'correct' | 'incorrect' | null pro Wort
+let currentPosition = 0;
+let isReading = false;
+let timerInterval = null;
+let selectedTextId = null;
+let recognition = null;
+let lastHeardText = '';
+let recognitionRestartTimer = null;
+let recognitionActive = false;
+
+// ─── NORMALISIERUNG & MATCHING (optimiert) ───
+function normalize(word) {
+  return word.toLowerCase()
+    .replace(/[.,!?;:'"„“«»()\[\]{}–—\-\/\\]/g, '')
+    .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
+    .replace(/\s+/g, '')
+    .trim();
+}
+
+function wordsMatch(spoken, expected) {
+  const s = normalize(spoken);
+  const e = normalize(expected);
+  if (!s || !e) return false;
+  if (s === e) return true;
+  if (s.includes(e) || e.includes(s)) return true;
+  if (e.length >= 4) {
+    // Levenshtein-Ähnlichkeit (vereinfacht)
+    let diff = 0;
+    const minL = Math.min(s.length, e.length);
+    const maxL = Math.max(s.length, e.length);
+    for (let i = 0; i < minL; i++) {
+      if (s[i] !== e[i]) diff++;
+    }
+    diff += maxL - minL;
+    if (diff <= 2) return true;
+  }
+  return false;
+}
+
+function findBestMatch(spoken, startIdx, range = 4) {
+  let bestIdx = -1;
+  let bestScore = 0;
+  for (let i = startIdx; i < Math.min(startIdx + range, wordArray.length); i++) {
+    if (wordResults[i] !== null) continue; // bereits gelesen
+    const sNorm = normalize(spoken);
+    const eNorm = normalize(wordArray[i]);
+    if (sNorm === eNorm) return i; // perfektes Match
+    let score = 0;
+    if (sNorm.includes(eNorm) || eNorm.includes(sNorm)) score = 0.8;
+    else {
+      const len = Math.min(sNorm.length, eNorm.length);
+      let matches = 0;
+      for (let j = 0; j < len; j++) {
+        if (sNorm[j] === eNorm[j]) matches++;
+      }
+      score = matches / Math.max(sNorm.length, eNorm.length);
+    }
+    if (score > bestScore) {
+      bestScore = score;
+      bestIdx = i;
+    }
+  }
+  return bestScore > 0.6 ? bestIdx : -1; // Schwellwert
+}
+
+// ─── SPRACHERKENNUNG (robust) ───
+function initializeSpeechRecognition() {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    setMicBar('off');
+    return;
+  }
+
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SR();
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  recognition.lang = 'de-DE';
+  recognition.maxAlternatives = 1;
+
+  recognition.onstart = () => {
+    console.log('Spracherkennung gestartet');
+    recognitionActive = true;
+    if (isReading) setMicBar('recording');
+  };
+
+  recognition.onend = () => {
+    console.log('Spracherkennung beendet');
+    recognitionActive = false;
+    // Automatischer Neustart, wenn noch gelesen wird
+    if (isReading && recognition) {
+      if (recognitionRestartTimer) clearTimeout(recognitionRestartTimer);
+      recognitionRestartTimer = setTimeout(() => {
+        if (isReading && recognition) {
+          try {
+            recognition.start();
+          } catch (e) {
+            console.warn('Neustart fehlgeschlagen', e);
+          }
+        }
+      }, 200);
+    }
+  };
+
+  recognition.onerror = (event) => {
+    console.error('Spracherkennungsfehler:', event.error);
+    if (event.error === 'not-allowed') {
+      setMicBar('error');
+      isReading = false;
+    } else if (event.error === 'no-speech') {
+      // kein Fehler, nur keine Eingabe
+    } else if (event.error === 'aborted') {
+      // wurde absichtlich gestoppt
+    } else {
+      setMicBar('off');
+    }
+  };
+
+  recognition.onresult = (event) => {
+    if (!isReading) return;
+
+    let finalTranscript = '';
+    let interimTranscript = '';
+
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      const transcript = event.results[i][0].transcript;
+      if (event.results[i].isFinal) {
+        finalTranscript += transcript + ' ';
+      } else {
+        interimTranscript += transcript;
+      }
+    }
+
+    if (interimTranscript) {
+      showHeard(interimTranscript, false);
+    }
+
+    if (finalTranscript) {
+      processSpoken(finalTranscript.trim());
+    }
+  };
+}
+
+function setMicBar(state) {
+  const bar = document.getElementById('micBar');
+  if (!bar) return;
+  bar.className = 'mic-bar';
+  if (state === 'recording') {
+    bar.classList.add('recording');
+    bar.innerHTML = '<div class="mic-pulse"></div><span>🎙️ Mikrofon aktiv – lies laut vor!</span>';
+  } else if (state === 'error') {
+    bar.classList.add('error');
+    bar.innerHTML = '<span>⚠️ Mikrofon nicht erlaubt – klicke für Diagnose</span>';
+    bar.onclick = () => { showView('settings'); testMicrophone(); };
+  } else if (state === 'off') {
+    bar.classList.add('off');
+    bar.innerHTML = '<span>🔇 Spracherkennung nicht verfügbar</span>';
+  } else {
+    bar.classList.add('waiting');
+    bar.innerHTML = '<span>🎙️ Mikrofon wird angefragt …</span>';
+  }
+}
+
+function processSpoken(transcript) {
+  if (!isReading || !wordArray.length) return;
+
+  const words = transcript.split(/\s+/).filter(w => w.length > 0);
+
+  for (const spokenWord of words) {
+    const matchIdx = findBestMatch(spokenWord, currentPosition, 5);
+    if (matchIdx !== -1) {
+      // Markiere übersprungene Wörter als Fehler
+      for (let i = currentPosition; i < matchIdx; i++) {
+        if (wordResults[i] === null) {
+          wordResults[i] = 'incorrect';
+        }
+      }
+      wordResults[matchIdx] = 'correct';
+      currentPosition = matchIdx + 1;
+      showHeard(spokenWord, true);
+    } else {
+      showHeard(spokenWord, false);
+    }
+    renderReadingText();
+  }
+}
+
+function showHeard(word, isMatch) {
+  const box = document.getElementById('heardBox');
+  if (box) {
+    box.innerHTML = isMatch
+      ? `Erkannt: <span class="heard-word" style="color:var(--emerald)">✓ ${word}</span>`
+      : `Erkannt: <span class="heard-word" style="color:var(--slate-400)">${word}</span>`;
+    lastHeardText = word;
+  }
+}
+
+// ─── NAVIGATION ───
+function showView(viewId) {
+  // Laufende Prozesse stoppen
+  if (isReading) stopRecognition();
+  if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + viewId).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  (document.querySelector(`.nav-item[data-view="${viewId}"]`) || document.querySelector('.nav-item[data-view="dashboard"]')).classList.add('active');
+  window.scrollTo({ top:0, behavior:'smooth' });
+
+  if (viewId === 'dashboard') updateDashboard();
+  if (viewId === 'select') renderTextOptions();
+  if (viewId === 'settings') {
+    document.getElementById('settingName').value = getName();
+    document.getElementById('micTestResult').style.display = 'none';
+  }
+}
+
+function stopRecognition() {
+  isReading = false;
+  if (recognitionRestartTimer) {
+    clearTimeout(recognitionRestartTimer);
+    recognitionRestartTimer = null;
+  }
+  if (recognition && recognitionActive) {
+    try {
+      recognition.stop();
+    } catch (e) {}
+  }
+}
+
+// ─── DASHBOARD ───
+function updateDashboard() {
+  const results = getResults();
+  const name = getName();
+  document.getElementById('heroGreeting').textContent = name ? `Hallo ${name}, werde zum Leseprofi!` : 'Werde zum Leseprofi!';
+  document.getElementById('statTests').textContent = results.length;
+
+  if (results.length > 0) {
+    const avgWpm = Math.round(results.reduce((s,r)=>s + (r.wpm || 0), 0) / results.length);
+    const bestWpm = Math.max(...results.map(r => r.wpm || 0));
+    const accResults = results.filter(r => r.accuracy != null);
+    const avgAcc = accResults.length ? Math.round(accResults.reduce((s,r)=>s + r.accuracy, 0) / accResults.length) : null;
+
+    document.getElementById('statAvgWpm').textContent = avgWpm;
+    document.getElementById('statBestWpm').textContent = bestWpm;
+    document.getElementById('statAvgAcc').textContent = avgAcc ? avgAcc + '%' : '–';
+  } else {
+    document.getElementById('statAvgWpm').textContent = '–';
+    document.getElementById('statBestWpm').textContent = '–';
+    document.getElementById('statAvgAcc').textContent = '–';
+  }
+
+  const progressHeading = document.getElementById('progressHeading');
+  const progressChart = document.getElementById('progressChart');
+  if (results.length >= 2) {
+    progressHeading.style.display = '';
+    progressChart.style.display = '';
+    renderChart(results);
+  } else {
+    progressHeading.style.display = 'none';
+    progressChart.style.display = 'none';
+  }
+
+  const historyHeading = document.getElementById('historyHeading');
+  const historyCard = document.getElementById('historyCard');
+  if (results.length > 0) {
+    historyHeading.style.display = '';
+    historyCard.style.display = '';
+    renderHistory(results);
+  } else {
+    historyHeading.style.display = 'none';
+    historyCard.style.display = 'none';
+  }
+}
+
+function renderChart(results) {
+  const container = document.getElementById('chartContainer');
+  const last = results.slice(-15);
+  if (last.length < 2) {
+    container.innerHTML = '';
+    return;
+  }
+
+  const W = 760, H = 180, pL = 45, pR = 15, pT = 15, pB = 30;
+  const cW = W - pL - pR, cH = H - pT - pB;
+
+  const wpmValues = last.map(r => r.wpm || 0);
+  const wMin = Math.max(0, Math.min(...wpmValues) - 15);
+  const wMax = Math.max(...wpmValues) + 15;
+
+  const wpmY = v => pT + cH - ((v - wMin) / (wMax - wMin)) * cH;
+  const accY = v => pT + cH - (v / 100) * cH;
+  const xPos = i => pL + (i / (last.length - 1)) * cW;
+
+  let wpmPath = last.map((r,i) => `${i === 0 ? 'M' : 'L'}${xPos(i).toFixed(1)},${wpmY(r.wpm).toFixed(1)}`).join(' ');
+  let areaPath = wpmPath + ` L${xPos(last.length-1).toFixed(1)},${pT + cH} L${xPos(0).toFixed(1)},${pT + cH} Z`;
+
+  let accPoints = last
+    .map((r,i) => r.accuracy != null ? { x: xPos(i), y: accY(r.accuracy), v: r.accuracy } : null)
+    .filter(p => p !== null);
+
+  let accPath = accPoints.map((p,i) => `${i === 0 ? 'M' : 'L'}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+
+  let gridLines = '';
+  for (let i = 0; i <= 4; i++) {
+    const y = pT + (cH / 4) * i;
+    const value = Math.round(wMax - ((wMax - wMin) / 4) * i);
+    gridLines += `<line class="chart-grid-line" x1="${pL}" y1="${y}" x2="${W-pR}" y2="${y}"/>`;
+    gridLines += `<text class="chart-label" x="${pL-8}" y="${y+4}" text-anchor="end">${value}</text>`;
+  }
+
+  let xLabels = '';
+  last.forEach((r, i) => {
+    if (last.length <= 8 || i % Math.ceil(last.length/8) === 0 || i === last.length-1) {
+      xLabels += `<text class="chart-label" x="${xPos(i)}" y="${H-4}" text-anchor="middle">#${results.length - last.length + i + 1}</text>`;
+    }
+  });
+
+  container.innerHTML = `
+    <svg class="svg-chart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <linearGradient id="tealGradient" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="var(--teal)" stop-opacity="0.2"/>
+          <stop offset="100%" stop-color="var(--teal)" stop-opacity="0.02"/>
+        </linearGradient>
+      </defs>
+      ${gridLines}
+      ${xLabels}
+      <path class="chart-area" d="${areaPath}"/>
+      <path class="chart-line" d="${wpmPath}"/>
+      ${last.map((r,i) => `<circle class="chart-dot" cx="${xPos(i).toFixed(1)}" cy="${wpmY(r.wpm).toFixed(1)}" r="4"><title>${r.wpm} WpM</title></circle>`).join('')}
+      ${accPath ? `<path class="comp-line" d="${accPath}"/>` : ''}
+      ${accPoints.map(p => `<circle class="comp-dot" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="4"><title>${p.v}%</title></circle>`).join('')}
+    </svg>
+  `;
+}
+
+function renderHistory(results) {
+  const list = document.getElementById('historyList');
+  const recent = results.slice(-10).reverse();
+  list.innerHTML = recent.map((r, i) => {
+    const idx = results.length - i;
+    const date = r.date ? new Date(r.date).toLocaleDateString('de-DE', {day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit'}) : '';
+    const acc = r.accuracy;
+    let scoreClass = 'good';
+    if (acc != null) {
+      if (acc < 60) scoreClass = 'weak';
+      else if (acc < 80) scoreClass = 'ok';
+    }
+    return `
+      <div class="history-item">
+        <div class="hi-info">
+          <div class="hi-title">${r.title || 'Test #' + idx}</div>
+          <div class="hi-meta">${date} · ${r.wordCount || 0} Wörter</div>
+        </div>
+        <div class="hi-wpm">${r.wpm || 0} <span style="font-size:0.7rem;color:var(--slate-400)">WpM</span></div>
+        ${acc != null ? `<div class="hi-score ${scoreClass}">${acc}%</div>` : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+function formatTime(s) {
+  const m = Math.floor(s / 60);
+  const sec = Math.floor(s % 60);
+  return m > 0 ? `${m}:${String(sec).padStart(2,'0')} Min.` : `${sec} Sek.`;
+}
+
+// ─── TEXT AUSWAHL ───
+function renderTextOptions() {
+  const container = document.getElementById('textOptions');
+  const difficultyLabels = { easy: ['Leicht', 'diff-easy'], medium: ['Mittel', 'diff-medium'], hard: ['Anspruchsvoll', 'diff-hard'] };
+
+  container.innerHTML = TEXTS.map(t => {
+    const wordCount = t.text.split(/\s+/).length;
+    const [diffLabel, diffClass] = difficultyLabels[t.difficulty];
+    return `
+      <div class="text-option ${selectedTextId === t.id ? 'selected' : ''}" onclick="selectText('${t.id}')">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+          <h4>${t.title}</h4>
+          <span class="difficulty-badge ${diffClass}">${diffLabel}</span>
+        </div>
+        <div class="to-meta">
+          <span>${wordCount} Wörter</span>
+          <span>${t.questions.length} Fragen</span>
+        </div>
+        <div class="to-preview">${t.text.substring(0,120)}…</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function selectText(id) {
+  selectedTextId = id;
+  renderTextOptions();
+  document.getElementById('startSelectedBtn').disabled = false;
+}
+
+// ─── START LESEN ───
+function startReading() {
+  if (!selectedTextId) return;
+  const text = TEXTS.find(x => x.id === selectedTextId);
+  if (!text) return;
+
+  currentTest = {
+    textId: text.id,
+    title: text.title,
+    text: text.text,
+    wordCount: text.text.split(/\s+/).length,
+    questions: text.questions,
+    startTime: 0,
+    elapsed: 0,
+    wpm: 0,
+    compScore: 0,
+    compTotal: text.questions.length,
+    answers: {},
+    isCustom: false,
+    accuracy: null
+  };
+  beginReading();
+}
+
+function startCustomReading() {
+  const text = document.getElementById('customText').value.trim();
+  if (!text || text.split(/\s+/).length < 5) {
+    alert('Bitte gib einen Text mit mindestens 5 Wörtern ein.');
+    return;
+  }
+
+  currentTest = {
+    textId: 'custom',
+    title: document.getElementById('customTitle').value.trim() || 'Eigener Text',
+    text: text,
+    wordCount: text.split(/\s+/).length,
+    questions: null,
+    startTime: 0,
+    elapsed: 0,
+    wpm: 0,
+    compScore: 0,
+    compTotal: 0,
+    answers: {},
+    isCustom: true,
+    accuracy: null
+  };
+  beginReading();
+}
+
+async function beginReading() {
+  wordArray = currentTest.text.split(/\s+/).filter(w => w.length > 0);
+  wordResults = new Array(wordArray.length).fill(null);
+  currentPosition = 0;
+  isReading = false;
+
+  const useCountdown = document.getElementById('settingCountdown').value === 'yes';
+  if (useCountdown) {
+    showCountdown(() => showReadingView());
+  } else {
+    showReadingView();
+  }
+}
+
+function showCountdown(callback) {
+  const overlay = document.getElementById('countdownOverlay');
+  const num = document.getElementById('countdownNumber');
+  overlay.style.display = 'flex';
+  let count = 3;
+  num.textContent = count;
+
+  const interval = setInterval(() => {
+    count--;
+    if (count > 0) {
+      num.textContent = count;
+      num.style.animation = 'none';
+      void num.offsetWidth;
+      num.style.animation = 'countPop 0.6s ease';
+    } else if (count === 0) {
+      num.textContent = 'Los!';
+      num.style.animation = 'none';
+      void num.offsetWidth;
+      num.style.animation = 'countPop 0.6s ease';
+    } else {
+      clearInterval(interval);
+      overlay.style.display = 'none';
+      callback();
+    }
+  }, 800);
+}
+
+async function showReadingView() {
+  showView('reading');
+
+  // Einstellungen anwenden
+  const fontSize = document.getElementById('settingFontSize').value;
+  const lineHeight = document.getElementById('settingLineHeight').value;
+  const textEl = document.getElementById('readingText');
+  textEl.style.fontSize = fontSize;
+  textEl.style.lineHeight = lineHeight;
+
+  document.getElementById('readingTitle').textContent = currentTest.title;
+  document.getElementById('heardBox').innerHTML = '';
+  renderReadingText();
+
+  // Timer starten
+  currentTest.startTime = Date.now();
+  const timerEl = document.getElementById('readingTimer');
+  timerInterval = setInterval(() => {
+    const elapsed = (Date.now() - currentTest.startTime) / 1000;
+    const mins = Math.floor(elapsed / 60);
+    const secs = Math.floor(elapsed % 60);
+    timerEl.textContent = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+  }, 200);
+
+  // Mikrofon initialisieren (falls nötig)
+  if (!recognition) {
+    initializeSpeechRecognition();
+  }
+
+  if (!recognition) {
+    setMicBar('off');
+    isReading = true; // Zeitmessung trotzdem aktiv
+    return;
+  }
+
+  // Mikrofon-Berechtigung anfragen
+  setMicBar('waiting');
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    stream.getTracks().forEach(track => track.stop());
+    console.log('✅ Mikrofon-Berechtigung erteilt');
+  } catch (err) {
+    console.error('Mikrofon-Fehler:', err);
+    setMicBar('error');
+    isReading = true; // Zeitmessung trotzdem aktiv
+    return;
+  }
+
+  // Spracherkennung starten
+  try {
+    isReading = true;
+    recognition.start();
+    setMicBar('recording');
+    console.log('✅ Spracherkennung gestartet');
+  } catch (err) {
+    console.error('Fehler beim Starten der Spracherkennung:', err);
+    setMicBar('error');
+    isReading = true; // Zeitmessung trotzdem aktiv
+  }
+}
+
+function renderReadingText() {
+  const container = document.getElementById('readingText');
+  container.innerHTML = wordArray.map((word, i) => {
+    let cls = 'word';
+    if (wordResults[i] === 'correct') cls += ' correct';
+    else if (wordResults[i] === 'incorrect') cls += ' error';
+    else if (i === currentPosition && isReading) cls += ' current';
+    return `<span class="${cls}" id="word-${i}">${word}</span>`;
+  }).join(' ');
+
+  // Automatisches Scrollen zum aktuellen Wort
+  if (currentPosition < wordArray.length && isReading) {
+    const el = document.getElementById('word-' + currentPosition);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+}
+
+// ─── LESEN BEENDEN ───
+function finishReading() {
+  stopRecognition();
+
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+
+  // Zeit berechnen
+  currentTest.elapsed = (Date.now() - currentTest.startTime) / 1000;
+  currentTest.wpm = Math.round((currentTest.wordCount / currentTest.elapsed) * 60);
+
+  // Genauigkeit berechnen
+  const correct = wordResults.filter(r => r === 'correct').length;
+  const errors = wordResults.filter(r => r === 'incorrect').length;
+  const totalRead = correct + errors;
+  currentTest.accuracy = totalRead > 0 ? Math.round((correct / totalRead) * 100) : (correct > 0 ? 100 : null);
+  currentTest.correctWords = correct;
+  currentTest.errorWords = errors;
+  currentTest.unreadWords = wordResults.filter(r => r === null).length;
+
+  if (currentTest.questions && currentTest.questions.length > 0) {
+    showQuestionsView();
+  } else {
+    currentTest.compScore = 0;
+    currentTest.compTotal = 0;
+    showResults();
+  }
+}
+
+// ─── FRAGEN ───
+function showQuestionsView() {
+  showView('questions');
+  currentTest.answers = {};
+
+  const container = document.getElementById('questionsContainer');
+  container.innerHTML = currentTest.questions.map((q, qi) => `
+    <div class="question-card" id="qcard-${qi}">
+      <div class="qc-num">Frage ${qi+1} von ${currentTest.questions.length}</div>
+      <h4>${q.q}</h4>
+      <div>
+        ${q.options.map((o, oi) => `
+          <button class="answer-option" onclick="selectAnswer(${qi},${oi},this)">${o}</button>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function selectAnswer(qi, oi, btn) {
+  currentTest.answers[qi] = oi;
+  document.getElementById('qcard-' + qi).querySelectorAll('.answer-option').forEach(b => {
+    b.classList.remove('selected');
+  });
+  btn.classList.add('selected');
+}
+
+function checkAnswers() {
+  let correct = 0;
+  currentTest.questions.forEach((q, qi) => {
+    const card = document.getElementById('qcard-' + qi);
+    card.querySelectorAll('.answer-option').forEach((b, oi) => {
+      b.classList.remove('selected');
+      b.disabled = true;
+      if (oi === q.correct) {
+        b.classList.add('correct');
+      } else if (currentTest.answers[qi] === oi) {
+        b.classList.add('incorrect');
+      }
+    });
+    if (currentTest.answers[qi] === q.correct) correct++;
+  });
+
+  currentTest.compScore = correct;
+  currentTest.compTotal = currentTest.questions.length;
+  setTimeout(showResults, 1000);
+}
+
+// ─── ERGEBNISSE ───
+function showResults() {
+  const result = {
+    textId: currentTest.textId,
+    title: currentTest.title,
+    wordCount: currentTest.wordCount,
+    elapsed: currentTest.elapsed,
+    wpm: currentTest.wpm,
+    compScore: currentTest.compScore,
+    compTotal: currentTest.compTotal,
+    accuracy: currentTest.accuracy,
+    date: new Date().toISOString(),
+    isCustom: currentTest.isCustom
+  };
+  saveResult(result);
+  showView('results');
+
+  const wpm = currentTest.wpm;
+  const acc = currentTest.accuracy;
+  const compPct = currentTest.compTotal > 0 ? Math.round((currentTest.compScore / currentTest.compTotal) * 100) : null;
+
+  // Emoji und Titel basierend auf Leistung
+  let emoji = '⏱️', title = 'Gut gemacht!', subtitle = '';
+  if (acc != null && acc >= 85 && wpm >= 100) {
+    emoji = '🏆'; title = 'Großartig!'; subtitle = 'Schnell UND genau vorgelesen!';
+  } else if (acc != null && acc >= 85) {
+    emoji = '⭐'; title = 'Sehr genau!'; subtitle = 'Fast alle Wörter richtig gelesen!';
+  } else if (wpm >= 100) {
+    emoji = '🚀'; title = 'Tolles Tempo!'; subtitle = 'Du liest richtig flüssig!';
+  } else if (acc != null && acc < 60) {
+    emoji = '💪'; title = 'Weiter üben!'; subtitle = 'Versuche, langsamer und genauer zu lesen.';
+  } else {
+    emoji = '👍'; title = 'Gut gemacht!'; subtitle = 'Jede Übung macht dich besser!';
+  }
+
+  document.getElementById('resultEmoji').textContent = emoji;
+  document.getElementById('resultTitle').textContent = title;
+  document.getElementById('resultSubtitle').textContent = subtitle;
+
+  // Metriken
+  const results = getResults();
+  const prev = results.length >= 2 ? results[results.length - 2] : null;
+  const metrics = [];
+
+  let wpmChange = '';
+  if (prev) {
+    const diff = wpm - prev.wpm;
+    wpmChange = diff > 0 ? `<div class="mc-change up">▲ +${diff}</div>` : (diff < 0 ? `<div class="mc-change down">▼ ${diff}</div>` : '');
+  }
+
+  metrics.push(`
+    <div class="metric-card">
+      <div class="mc-value" style="color:var(--teal)">${wpm}</div>
+      <div class="mc-label">Wörter / Minute</div>
+      ${wpmChange}
+    </div>
+  `);
+
+  metrics.push(`
+    <div class="metric-card">
+      <div class="mc-value" style="color:var(--slate-600)">${formatTime(currentTest.elapsed)}</div>
+      <div class="mc-label">Lesezeit</div>
+    </div>
+  `);
+
+  if (acc != null) {
+    const color = acc >= 80 ? 'var(--emerald)' : (acc >= 60 ? 'var(--amber)' : 'var(--rose)');
+    metrics.push(`
+      <div class="metric-card">
+        <div class="mc-value" style="color:${color}">${acc}%</div>
+        <div class="mc-label">Genauigkeit</div>
+      </div>
+    `);
+  }
+
+  if (compPct != null) {
+    const color = compPct >= 75 ? 'var(--emerald)' : (compPct >= 50 ? 'var(--amber)' : 'var(--rose)');
+    metrics.push(`
+      <div class="metric-card">
+        <div class="mc-value" style="color:${color}">${compPct}%</div>
+        <div class="mc-label">Textverständnis</div>
+      </div>
+    `);
+  }
+
+  document.getElementById('resultMetrics').innerHTML = metrics.join('');
+
+  // Wort-für-Wort-Analyse
+  const wordSection = document.getElementById('wordAnalysisSection');
+  const correct = currentTest.correctWords || 0;
+  const errors = currentTest.errorWords || 0;
+  const unread = currentTest.unreadWords || 0;
+
+  if (correct > 0 || errors > 0) {
+    const wordHtml = wordArray.map((w, i) => {
+      if (wordResults[i] === 'correct') return `<span class="wf-correct">${w}</span>`;
+      if (wordResults[i] === 'incorrect') return `<span class="wf-error">${w}</span>`;
+      return `<span class="wf-unread">${w}</span>`;
+    }).join(' ');
+
+    wordSection.innerHTML = `
+      <div class="word-analysis-card">
+        <div class="wa-header">
+          <div class="wa-title">📝 Wort-für-Wort-Analyse</div>
+          <div class="wa-legend">
+            <div class="wa-legend-item"><div class="wa-legend-dot" style="background:var(--emerald-light);border:2px solid var(--emerald)"></div>Richtig</div>
+            <div class="wa-legend-item"><div class="wa-legend-dot" style="background:var(--rose-light);border:2px solid var(--rose)"></div>Fehler</div>
+            <div class="wa-legend-item"><div class="wa-legend-dot" style="background:var(--slate-100);border:2px solid var(--slate-300)"></div>Nicht gelesen</div>
+          </div>
+        </div>
+        <div class="word-flow">${wordHtml}</div>
+        <div class="wa-stats-bar">
+          <span class="wa-stat-chip" style="background:var(--emerald-light);color:#065F46">✓ ${correct} richtig</span>
+          ${errors > 0 ? `<span class="wa-stat-chip" style="background:var(--rose-light);color:#9F1239">✗ ${errors} Fehler</span>` : ''}
+          ${unread > 0 ? `<span class="wa-stat-chip" style="background:var(--slate-100);color:var(--slate-500)">○ ${unread} nicht gelesen</span>` : ''}
+        </div>
+      </div>
+    `;
+  } else {
+    wordSection.innerHTML = `<div class="card" style="text-align:center;color:var(--slate-400);padding:20px">🔇 Keine Sprachaufnahme vorhanden.</div>`;
+  }
+
+  // Tipps
+  let tip = '';
+  if (acc != null && acc < 60) {
+    tip = '💡 Versuche, langsamer und deutlicher vorzulesen. Konzentriere dich auf jedes Wort. Mit der Zeit wirst du schneller!';
+  } else if (acc != null && acc < 80) {
+    tip = '💡 Schon ganz gut! Achte auf die rot markierten Wörter – die wurden übersprungen oder falsch gelesen.';
+  } else if (acc != null && acc >= 80 && wpm < 80) {
+    tip = '💡 Du liest sehr genau! Versuche jetzt, das Tempo langsam zu steigern.';
+  } else if (acc != null && acc >= 80) {
+    tip = '💡 Toll! Du liest schnell und genau. Probiere einen schwierigeren Text!';
+  } else {
+    tip = '💡 Tipp: Wähle einen Text mit Fragen, um auch dein Textverständnis zu trainieren.';
+  }
+  document.getElementById('resultTip').innerHTML = tip;
+
+  // Vergleich mit früheren Ergebnissen
+  const comparisonDiv = document.getElementById('resultComparison');
+  if (results.length >= 3) {
+    const last5 = results.slice(-5);
+    const avgLast5 = Math.round(last5.reduce((s, r) => s + (r.wpm || 0), 0) / last5.length);
+    const first5 = results.slice(0, Math.min(5, results.length));
+    const avgFirst5 = Math.round(first5.reduce((s, r) => s + (r.wpm || 0), 0) / first5.length);
+    const improvement = avgLast5 - avgFirst5;
+
+    if (improvement > 5) {
+      comparisonDiv.style.display = '';
+      comparisonDiv.innerHTML = `
+        <div class="card" style="text-align:center;padding:20px">
+          <div style="font-size:1.8rem;margin-bottom:8px">📈</div>
+          <div style="font-family:var(--font-display);font-size:1.1rem;color:var(--slate-700)">Dein Fortschritt</div>
+          <div style="font-family:var(--font-display);font-size:2rem;color:var(--emerald);margin-top:4px">+${improvement} WpM</div>
+          <div style="font-size:0.85rem;color:var(--slate-400)">Erste Tests: Ø ${avgFirst5} → Letzte Tests: Ø ${avgLast5} WpM</div>
+        </div>
+      `;
+    } else {
+      comparisonDiv.style.display = 'none';
+    }
+  } else {
+    comparisonDiv.style.display = 'none';
+  }
+}
+
+// ─── MIKROFON TEST ───
+async function testMicrophone() {
+  const resultDiv = document.getElementById('micTestResult');
+  resultDiv.style.display = 'block';
+
+  let log = '';
+  const add = (emoji, text) => {
+    log += `<div style="padding:6px 0;font-size:0.9rem">${emoji} ${text}</div>`;
+    resultDiv.innerHTML = log;
+  };
+
+  add('🔍', '<strong>Diagnose wird durchgeführt …</strong>');
+
+  // Test 1: Protokoll
+  add(window.location.protocol === 'file:' ? '⚠️' : '✅', `Protokoll: <code>${window.location.protocol}</code>` + (window.location.protocol === 'file:' ? ' – <strong style="color:var(--rose)">file:// kann Mikrofon blockieren! Bitte über HTTP öffnen.</strong>' : ''));
+
+  // Test 2: SpeechRecognition API
+  const hasSR = ('webkitSpeechRecognition' in window) || ('SpeechRecognition' in window);
+  add(hasSR ? '✅' : '❌', 'SpeechRecognition API: ' + (hasSR ? 'Verfügbar' : '<strong style="color:var(--rose)">NICHT verfügbar – bitte Chrome oder Edge verwenden</strong>'));
+
+  // Test 3: getUserMedia API
+  const hasGUM = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+  add(hasGUM ? '✅' : '❌', 'getUserMedia API: ' + (hasGUM ? 'Verfügbar' : '<strong style="color:var(--rose)">NICHT verfügbar</strong>'));
+
+  if (!hasGUM) {
+    add('💡', '<strong>Lösung:</strong> Datei über einen lokalen Server öffnen (z.B. <code>python3 -m http.server 8080</code>), dann <code>http://localhost:8080</code> im Browser aufrufen.');
+    return;
+  }
+
+  // Test 4: Mikrofon-Berechtigung anfragen
+  add('🎙️', 'Frage Mikrofon-Berechtigung an …');
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    stream.getTracks().forEach(t => t.stop());
+    add('✅', '<strong style="color:var(--emerald)">Mikrofon-Zugriff ERLAUBT!</strong>');
+  } catch (err) {
+    add('❌', `<strong style="color:var(--rose)">Mikrofon-Zugriff VERWEIGERT:</strong> ${err.name} – ${err.message}`);
+    if (err.name === 'NotAllowedError') {
+      add('💡', '<strong>Lösung:</strong> Klicke auf das 🔒 links neben der Adressleiste → Website-Einstellungen → Mikrofon auf "Zulassen". Dann Seite neu laden.');
+    } else if (err.name === 'NotFoundError') {
+      add('💡', '<strong>Lösung:</strong> Kein Mikrofon gefunden. Schließe ein Mikrofon an.');
+    }
+    return;
+  }
+
+  // Test 5: Kurzen Spracherkennungstest durchführen
+  if (hasSR) {
+    add('🎤', 'Starte kurzen Spracherkennungstest (3 Sek.) – bitte sprich etwas …');
+    try {
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const testRec = new SR();
+      testRec.lang = 'de-DE';
+      testRec.interimResults = true;
+      let heard = '';
+
+      testRec.onresult = (e) => {
+        heard = Array.from(e.results).map(r => r[0].transcript).join(' ');
+      };
+
+      testRec.start();
+
+      await new Promise(resolve => setTimeout(resolve, 3000));
+      testRec.stop();
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      if (heard) {
+        add('✅', `<strong style="color:var(--emerald)">Spracherkennung funktioniert!</strong> Erkannt: "${heard}"`);
+      } else {
+        add('⚠️', 'Keine Sprache erkannt (hast du etwas gesagt?). Die Erkennung ist aber aktiv.');
+      }
+    } catch (e) {
+      add('❌', `Spracherkennung fehlgeschlagen: ${e.message}`);
+    }
+  }
+
+  add('✅', '<strong>Diagnose abgeschlossen.</strong>');
+}
+
+function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(() => {});
+  } else {
+    document.exitFullscreen();
+  }
+}
+
+// ─── INITIALISIERUNG ───
+document.addEventListener('DOMContentLoaded', () => {
+  const customText = document.getElementById('customText');
+  if (customText) {
+    customText.addEventListener('input', () => {
+      const words = customText.value.trim().split(/\s+/).filter(w => w).length;
+      document.getElementById('customWordCount').textContent = words + ' Wörter';
+    });
+  }
+
+  initializeSpeechRecognition();
+  updateDashboard();
+});
+
+// Globale Funktionen für onclick
+window.showView = showView;
+window.selectText = selectText;
+window.startReading = startReading;
+window.startCustomReading = startCustomReading;
+window.finishReading = finishReading;
+window.selectAnswer = selectAnswer;
+window.checkAnswers = checkAnswers;
+window.toggleFullscreen = toggleFullscreen;
+window.testMicrophone = testMicrophone;
+window.resetAllData = resetAllData;
+window.saveName = saveName;
+</script>
+</body>
+</html>
